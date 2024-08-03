@@ -1,0 +1,51 @@
+import pandas as pd
+import numpy as np
+from sklearn.model_selection import train_test_split
+from sklearn.preprocessing import StandardScaler, LabelEncoder
+
+# Load dataset
+# Replace 'your_dataset.csv' with your dataset file path
+data = pd.read_csv('your_dataset.csv')
+
+# Display first few rows of the dataset
+print("First few rows of the dataset:")
+print(data.head())
+
+# Data Cleaning
+
+# Handling missing values
+# Option 1: Drop rows with missing values
+data = data.dropna()
+
+# Option 2: Fill missing values with the mean of the column
+# data = data.fillna(data.mean())
+
+# Removing duplicates
+data = data.drop_duplicates()
+
+# Data Transformation
+
+# Label Encoding for categorical features
+label_encoder = LabelEncoder()
+for column in data.select_dtypes(include=['object']).columns:
+    data[column] = label_encoder.fit_transform(data[column])
+
+# Feature Scaling
+scaler = StandardScaler()
+numerical_features = data.select_dtypes(include=[np.number]).columns
+data[numerical_features] = scaler.fit_transform(data[numerical_features])
+
+# Splitting the data into training and testing sets
+# Assuming the target variable is in the last column
+
+X = data.iloc[:, :-1].values
+y = data.iloc[:, -1].values
+
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
+
+print("Data preprocessing completed successfully!")
+print(f"Training data shape: {X_train.shape}")
+print(f"Testing data shape: {X_test.shape}")
+
+# Now the data is ready for AI model training
+
